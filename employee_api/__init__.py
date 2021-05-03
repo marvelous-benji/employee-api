@@ -13,7 +13,7 @@ app.config['DEBUG'] = True
 DATABASE_URL = os.environ['DB_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-app.config['SECRET_KEY'] = os.getenv('SECRETS')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['JSON_SORT_KEYS'] = False
 app.config['JWT_CREATE_TOKEN_EXPIRES'] = timedelta(minutes=30)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes=10)
