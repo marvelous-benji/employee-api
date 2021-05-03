@@ -6,7 +6,7 @@ import re
 from employee_api import db
 
 
-
+#creates user table
 class User(db.Model):
 	__tablename__ = 'users'
 	id = db.Column(db.Integer, primary_key=True)
@@ -38,15 +38,15 @@ class User(db.Model):
 	def __repr__(self):
 		return f"User('{self.email}')"
 	
-		
+#serialiser to convert user objects to json		
 class UserSchema(Schema):
 	class Meta:
 		model = User
 		sqla_session = db.session
 		ordered = True
-	id = fields.Integer(dump_only=True)
+	id = fields.Integer(dump_only=True) #dump only the user id
 		
-		
+#the employee table		
 class Employee(db.Model):
 	__tablename__ = 'employees'
 	id = db.Column(db.Integer, primary_key=True)
@@ -66,7 +66,7 @@ class Employee(db.Model):
 	def __repr__(self):
 		return f"Employee('{self.first_name}','{self.last_name}')"
 		
-
+#employee serializer
 class EmployeeSchema(Schema):
 	class Meta:
 		model = Employee
