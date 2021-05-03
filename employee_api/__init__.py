@@ -10,7 +10,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = os.environ['DB_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SECRET_KEY'] = os.getenv('SECRETS')
