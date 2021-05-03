@@ -6,6 +6,8 @@ import re
 from employee_api import db
 
 
+#The variables in each of the class User and Employee represents the column of the table formed by those class
+
 #creates user table
 class User(db.Model):
 	__tablename__ = 'users'
@@ -16,6 +18,7 @@ class User(db.Model):
 	employee = db.relationship('Employee', backref=db.backref('added_by'))
 	
 	
+	#checks if email is in a valid format
 	@validates('email')
 	def validate_email(self, key, email):
 		if not re.match("[^@]+@[^@]+\.[^@]+", email):
@@ -26,15 +29,15 @@ class User(db.Model):
 		db.session.add(self)
 		db.session.commit()
 
-	@staticmethod
+	@staticmethod #generates sha256 hash for any password
 	def hash_password(password):
 		return sha256.hash(password)
 
-	@staticmethod
+	@staticmethod #verifies if input password is the same as the hashed one for the user
 	def verify_password(password,hash):
 		return sha256.verify(password,hash)
 
-
+	#represents user objects in readable format, although not mandatory but neccessary
 	def __repr__(self):
 		return f"User('{self.email}')"
 	
