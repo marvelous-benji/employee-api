@@ -8,6 +8,10 @@ from flask_cors import CORS
 
 
 
+'''
+This file sets all the app configurations and also initializes all the installed libraries
+'''
+
 app = Flask(__name__)
 app.config['DEBUG'] = True
 DATABASE_URL = os.environ['DB_URL']
