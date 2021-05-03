@@ -6,6 +6,7 @@ from .models import User, Employee, EmployeeSchema
 
 
 
+#This first two function helps in returning user object(from the database) so that i can make use of the current_user to access any authenticated user
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
@@ -33,10 +34,11 @@ def user_signup():
 	try:
 		data = request.get_json()
 		if User.query.filter_by(email=data['email']).first():
+			#checks if email already exists and if email entered is valid(checks this through regex)
 			return jsonify({'status':'failed','msg':'Email already exist'}), 400
-		password = User.hash_password(data['password'])
+		password = User.hash_password(data['password']) #hashes password to sha256 hash
 		new_user = User(email=data['email'],password=password)
-		new_user.create_user()
+		new_user.create_user() # add user to database
 		return jsonify({'status':'success','msg':'Account created successfully'}), 201
 	except Exception as e:
 		print(e)
@@ -49,7 +51,7 @@ def user_login():
 		data = request.get_json()
 		user = User.query.filter_by(email=data['email']).first()
 		if user and User.verify_password(data['password'],user.password):
-			access_token = create_access_token(identity=user)
+			access_token = create_access_token(identity=user) #creates jwt tokens
 			return jsonify({'status':'success','msg':'Login successfully','access_token':access_token}), 200
 		return jsonify({'status':'failed','msg':'Invalid username or password'}), 403
 	except Exception as e:
@@ -108,6 +110,7 @@ def update_employee(id):
 		employee = Employee.query.filter_by(id=id).first()
 		if employee:
 			if employee.added_by.id == current_user.id:
+				#makes sure that only the user who added this employee can update it
 				employee.first_name = data.get('first_name',employee.first_name)
 				employee.last_name = data.get('last_name', employee.last_name)
 				employee.age = data.get('age',employee.age)
@@ -129,6 +132,7 @@ def delete_employee(id):
 		employee = Employee.query.filter_by(id=id).first()
 		if employee:
 			if employee.added_by.id == current_user.id:
+				#ensures only users who added that employee could delete it
 				db.session.delete(employee)
 				db.session.commit()
 				return jsonify({'status':'success','msg':'Employee deleted successful'}), 200
