@@ -5,11 +5,12 @@ import json
 from employee_api import app, db
 from employee_api.models import User, Employee
 
-
+#This file is important as it helps to know if normal function of the api has been broken whenever any change is made to the api
 
 class TestAllEndPoints(unittest.TestCase):
 	def setUp(self):
-		self.test_db_file = tempfile.TemporaryDirectory().name
+		#This method always run before any test method runs
+		self.test_db_file = tempfile.TemporaryDirectory().name #creates a mock database
 		app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.test_db_file
 		app.config['TESTING'] = True
 		self.app = app.test_client()
@@ -20,17 +21,20 @@ class TestAllEndPoints(unittest.TestCase):
 		user.create_user()
 		
 	def tearDown(self):
+		#This method always run after any test method runs
 		os.remove(self.test_db_file)
 		db.session.close_all()
 		db.drop_all()
 		
 	
-	def test_home(self)	:
+	def test_home(self):
+		#Tests the welcome route
 		resp = self.app.get('/api/v1/', content_type='application/json')
 		self.assertEqual(resp.status_code, 200)
 		self.assertTrue('It' in json.loads(resp.data))
 		
 	def test_signup(self):
+		#Tests the signup route
 		user1 = {'email':'benji@gmail.com','password':'bj_12345'}
 		resp1 = self.app.post('/api/v1/user/signup', data=json.dumps(user1), content_type='application/json')
 		self.assertEqual(resp1.status_code, 201)
@@ -47,6 +51,7 @@ class TestAllEndPoints(unittest.TestCase):
 	
 	
 	def get_token(self):
+		#generate timed jwt tokens
 		user = {'email':'test@test.com','password':'12345678'}
 		resp = self.app.post('/api/v1/user/login', data=json.dumps(user), content_type='application/json')
 		return json.loads(resp.data)['access_token']
